@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(E:/Git/gh.exe issue:*)",
+      "Bash(E:/Git/gh.exe project:*)",
+      "Bash(tasklist)",
+      "Bash(kill 22464)",
+      "Bash(rm -f \"E:/E-DRUCZEK/.git/index.lock\")",
+      "Bash(TaskKill /PID 22464 /F)",
+      "Bash(cmd /c \"taskkill /PID 22464 /F\")",
+      "Bash(wmic process:*)",
+      "Bash(grep -v \"^$\")"
+    ]
+  }
+}

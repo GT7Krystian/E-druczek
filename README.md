@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-druczek — KSeF SaaS MVP dla JDG
 
-## Getting Started
+System do wystawiania faktur zgodnych z KSeF 2.0 / FA(3) dla jednoosobowych działalności gospodarczych (VAT i ZW).
 
-First, run the development server:
+> **Obowiązek KSeF od 1 kwietnia 2026 (JDG)**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Struktura projektu
+
+```
+apps/
+  web/        # Frontend — Next.js 16, TypeScript, Tailwind CSS
+  api/        # Backend — NestJS 10, BullMQ, Redis
+packages/
+  shared/     # Wspólne typy TypeScript i enumy
+supabase/
+  migrations/ # Schemat bazy danych PostgreSQL
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Wymagania
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js >= 20
+- npm >= 10
+- Redis (lokalnie lub Docker)
+- Konto Supabase
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Pierwsze uruchomienie
 
-## Learn More
+```bash
+# 1. Sklonuj repo
+git clone https://github.com/GT7Krystian/E-druczek.git
+cd E-druczek
 
-To learn more about Next.js, take a look at the following resources:
+# 2. Zainstaluj zależności (wszystkie workspace'y)
+npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 3. Zbuduj pakiet shared
+npm run build:shared
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# 4. Skonfiguruj zmienne środowiskowe
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+# Uzupełnij wartości w obu plikach .env
 
-## Deploy on Vercel
+# 5. Uruchom bazę danych
+# Wejdź na supabase.com, stwórz projekt, uruchom migracje z supabase/migrations/
+# w kolejności: 001 → 002 → 003
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 6. Uruchom Redis
+docker run -d -p 6379:6379 redis:alpine
+# lub lokalnie jeśli masz zainstalowany Redis
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 7. Uruchom serwery deweloperskie
+npm run dev:web   # http://localhost:3000
+npm run dev:api   # http://localhost:3001/api
+```
+
+## Migracje Supabase
+
+Uruchom w SQL Editor na supabase.com w kolejności:
+
+| Plik | Zawartość |
+|------|-----------|
+| `supabase/migrations/001_init_users_companies.sql` | Tabele: users, companies, company_ksef_connections |
+| `supabase/migrations/002_documents.sql` | Tabele: documents, document_items + trigger Data Freeze |
+| `supabase/migrations/003_monitoring_dlq.sql` | Tabela: failed_jobs, widoki SLA, funkcja limitu 10k |
+
+## Dokumentacja
+
+- [Architektura systemu](./Dokumentacja%20Architektury%20KSeF%20dla%20JDG.md)
+- [Plan implementacji](./PLAN.md)

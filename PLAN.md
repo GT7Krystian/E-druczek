@@ -17,15 +17,15 @@
 *Cel: mieć działające repo z właściwą strukturą, żeby Claude Code wiedział co robi*
 
 - [x] Dokumentacja architektury w repo (`Dokumentacja Architektury KSeF dla JDG.md`)
-- [ ] Restrukturyzacja monorepo:
-  - [ ] `apps/web/` — przeniesienie obecnego Next.js
-  - [ ] `apps/api/` — scaffold NestJS
-  - [ ] `packages/shared/` — folder na wspólne typy
-  - [ ] `supabase/migrations/` — folder na migracje SQL
-- [ ] Aktualizacja `CLAUDE.md` z nową strukturą
-- [ ] Aktualizacja `AGENTS.md` z nową strukturą
-- [ ] Plik `.env.example` dla `apps/api` i `apps/web`
-- [ ] `README.md` z instrukcją uruchomienia projektu
+- [x] Restrukturyzacja monorepo:
+  - [x] `apps/web/` — przeniesienie obecnego Next.js
+  - [x] `apps/api/` — scaffold NestJS
+  - [x] `packages/shared/` — folder na wspólne typy
+  - [x] `supabase/migrations/` — folder na migracje SQL
+- [x] Aktualizacja `CLAUDE.md` z nową strukturą
+- [x] Aktualizacja `AGENTS.md` z nową strukturą
+- [x] Plik `.env.example` dla `apps/api` i `apps/web`
+- [x] `README.md` z instrukcją uruchomienia projektu
 
 **✅ Punkt kontrolny E0:** `git clone` + `npm install` działa bez błędów
 
