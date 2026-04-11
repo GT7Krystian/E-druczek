@@ -40,7 +40,7 @@
   - [x] `002_documents.sql` — documents, document_items + Data Freeze trigger
   - [x] `003_monitoring_dlq.sql` — SLA views, failed_jobs, funkcja limitu 10k
 - [ ] Weryfikacja triggerów (Data Freeze, updated_at, queued_at)
-- [ ] Migracja 004: RLS policies + integracja z auth.users
+- [x] Migracja 004: RLS policies + integracja z auth.users
 - [ ] Supabase Auth — konfiguracja (email/password na start)
 - [x] Zmienne środowiskowe w `.env` (lokalnie, nigdy w repo)
 
