@@ -34,15 +34,15 @@
 ## ETAP 1 — Baza danych (Supabase)
 *Cel: działający schemat bazy z RLS, gotowy do przyjęcia danych*
 
-- [ ] Założenie projektu Supabase (region: Frankfurt)
-- [ ] Uruchomienie migracji:
-  - [ ] `001_users_and_companies.sql` — users, companies, ksef_connections
-  - [ ] `002_documents.sql` — documents, document_items, failed_jobs
-  - [ ] `003_functions_and_views.sql` — SLA views, funkcja limitu 10k
+- [x] Założenie projektu Supabase (pazvyykomhscnassdhce)
+- [x] Uruchomienie migracji:
+  - [x] `001_init_users_companies.sql` — users, companies, ksef_connections
+  - [x] `002_documents.sql` — documents, document_items + Data Freeze trigger
+  - [x] `003_monitoring_dlq.sql` — SLA views, failed_jobs, funkcja limitu 10k
 - [ ] Weryfikacja triggerów (Data Freeze, updated_at, queued_at)
-- [ ] Weryfikacja RLS — użytkownik widzi tylko swoje dane
+- [ ] Migracja 004: RLS policies + integracja z auth.users
 - [ ] Supabase Auth — konfiguracja (email/password na start)
-- [ ] Zmienne środowiskowe w `.env` (lokalnie, nigdy w repo)
+- [x] Zmienne środowiskowe w `.env` (lokalnie, nigdy w repo)
 
 **✅ Punkt kontrolny E1:** Można założyć usera, firmę i dokument przez SQL Editor
 

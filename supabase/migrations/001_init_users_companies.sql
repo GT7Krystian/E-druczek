@@ -7,7 +7,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ENUM TYPES
 -- -------------------------------------------------------
 
-CREATE TYPE user_role AS ENUM ('admin', 'user');
+-- Supabase reserves the name "user_role" in public schema, so we prefix ours.
+CREATE TYPE app_user_role AS ENUM ('admin', 'user');
 
 CREATE TYPE vat_status AS ENUM (
   'VAT_ACTIVE',
@@ -24,7 +25,7 @@ CREATE TYPE cert_type2_status AS ENUM ('VALID', 'REVOKED', 'UNKNOWN');
 CREATE TABLE users (
   id         UUID        PRIMARY KEY DEFAULT uuid_generate_v4(),
   email      VARCHAR     NOT NULL UNIQUE,
-  role       user_role   NOT NULL DEFAULT 'user',
+  role       app_user_role NOT NULL DEFAULT 'user',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
