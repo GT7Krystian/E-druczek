@@ -10,7 +10,20 @@
       "Bash(TaskKill /PID 22464 /F)",
       "Bash(cmd /c \"taskkill /PID 22464 /F\")",
       "Bash(wmic process:*)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(docker run:*)",
+      "Bash(docker exec:*)",
+      "Bash('/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VisualStudio/NodeJs/npm.cmd' install --workspace=apps/api)",
+      "Bash('/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VisualStudio/NodeJs/npm.cmd' install)",
+      "Bash(export PATH=\"/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VisualStudio/NodeJs:$PATH\")",
+      "Bash(\"/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VisualStudio/NodeJs/npm.cmd\" run build --workspace=packages/shared)",
+      "Bash(\"/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VisualStudio/NodeJs/npm.cmd\" run build --workspace=apps/api)",
+      "Bash(node dist/main.js)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3001/api/companies)",
+      "Bash(grep -v '^$')",
+      "Bash(xargs -I{} cmd /c \"taskkill /PID {} /F\")",
+      "Bash(grep -i \"dist/main\\\\|dist\\\\\\\\\\\\\\\\main\")",
+      "Bash(cmd //c \"taskkill /PID 14348 /F\")"
     ]
   }
 }

@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { InvoicesModule } from './invoices/invoices.module';
+import { SupabaseModule } from './supabase/supabase.module';
+import { AuthModule } from './auth/auth.module';
+import { CompaniesModule } from './companies/companies.module';
+import { DocumentsModule } from './documents/documents.module';
 import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    InvoicesModule,
+    SupabaseModule,
+    AuthModule,
+    CompaniesModule,
+    DocumentsModule,
     QueueModule,
   ],
 })

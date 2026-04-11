@@ -51,16 +51,16 @@
 ## ETAP 2 — Backend NestJS — szkielet
 *Cel: działające API z połączeniem do Supabase i Redis*
 
-- [ ] Inicjalizacja projektu NestJS w `apps/api`
-- [ ] Moduły bazowe:
-  - [ ] `AuthModule` — JWT + Supabase Auth
-  - [ ] `CompaniesModule` — CRUD firm
-  - [ ] `DocumentsModule` — CRUD dokumentów (bez KSeF na razie)
-- [ ] Połączenie z Supabase (service role key)
-- [ ] Połączenie z Redis (BullMQ)
-- [ ] Współdzielone typy w `packages/shared` (enums, DTO)
-- [ ] Walidacja DTO (class-validator)
-- [ ] Globalny error handler
+- [x] Inicjalizacja projektu NestJS w `apps/api`
+- [x] Moduły bazowe:
+  - [x] `AuthModule` — guard weryfikujący Supabase JWT
+  - [x] `CompaniesModule` — CRUD firm
+  - [x] `DocumentsModule` — CRUD dokumentów (bez KSeF na razie)
+- [x] Połączenie z Supabase (service role key) — `SupabaseModule` global
+- [x] Połączenie z Redis (BullMQ) — działa, kolejki zarejestrowane
+- [x] Współdzielone typy w `packages/shared` (enums, DTO) — CommonJS build
+- [x] Walidacja DTO (class-validator) — globalny ValidationPipe (whitelist, transform)
+- [x] Globalny error handler — `AllExceptionsFilter`
 
 **✅ Punkt kontrolny E2:** `POST /companies` i `POST /documents` działają, dane lądują w Supabase
 
