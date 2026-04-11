@@ -39,9 +39,9 @@
   - [x] `001_init_users_companies.sql` — users, companies, ksef_connections
   - [x] `002_documents.sql` — documents, document_items + Data Freeze trigger
   - [x] `003_monitoring_dlq.sql` — SLA views, failed_jobs, funkcja limitu 10k
-- [ ] Weryfikacja triggerów (Data Freeze, updated_at, queued_at)
+- [x] Weryfikacja triggerów (Data Freeze zweryfikowany — blokuje mutację QUEUED; handle_new_auth_user działa)
 - [x] Migracja 004: RLS policies + integracja z auth.users
-- [ ] Supabase Auth — konfiguracja (email/password na start)
+- [x] Supabase Auth — konfiguracja (email/password, Site URL, Redirect URLs)
 - [x] Zmienne środowiskowe w `.env` (lokalnie, nigdy w repo)
 
 **✅ Punkt kontrolny E1:** Można założyć usera, firmę i dokument przez SQL Editor
