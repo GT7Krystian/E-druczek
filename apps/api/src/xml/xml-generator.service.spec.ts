@@ -64,7 +64,7 @@ describe('XmlGeneratorService', () => {
     it('emits XML declaration and Faktura root with FA(3) namespace', () => {
       expect(xml).toMatch(/<\?xml version="1\.0" encoding="UTF-8"\?>/);
       expect(xml).toContain(
-        '<Faktura xmlns="http://crd.gov.pl/wzor/2025/04/03/04031/">',
+        '<Faktura xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">',
       );
     });
 
@@ -100,9 +100,11 @@ describe('XmlGeneratorService', () => {
       expect(xml).toContain('<P_15>123.00</P_15>');
     });
 
-    it('emits Adnotacje with P_19N=1 (no exemption)', () => {
+    it('emits Adnotacje with P_19N=1 (no exemption) and P_22N=1', () => {
       expect(xml).toContain('<P_19N>1</P_19N>');
       expect(xml).not.toContain('<P_19A>');
+      expect(xml).toContain('<P_22N>1</P_22N>');
+      expect(xml).toContain('<RodzajFaktury>VAT</RodzajFaktury>');
     });
 
     it('emits FaWiersz with line item details and P_12=23', () => {

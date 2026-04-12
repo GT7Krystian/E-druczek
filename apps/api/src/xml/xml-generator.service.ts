@@ -7,7 +7,7 @@ import {
   XmlBuyerInput,
 } from './xml-generator.types';
 
-const FA3_NAMESPACE = 'http://crd.gov.pl/wzor/2025/04/03/04031/';
+const FA3_NAMESPACE = 'http://crd.gov.pl/wzor/2025/06/25/13775/';
 const FA3_KOD_FORMULARZA = 'FA';
 const FA3_KOD_SYSTEMOWY = 'FA (3)';
 const FA3_WERSJA_SCHEMY = '1-0E';
@@ -139,7 +139,7 @@ export class XmlGeneratorService {
     } else {
       zwolnienie.ele('P_19N').txt('1');
     }
-    adnotacje.ele('NoweSrodkiTransportu').ele('P_22').txt('2');
+    adnotacje.ele('NoweSrodkiTransportu').ele('P_22N').txt('1');
     adnotacje.ele('P_23').txt('2');
     const procedura = adnotacje.ele('PMarzy');
     procedura.ele('P_PMarzyN').txt('1');
@@ -157,6 +157,13 @@ export class XmlGeneratorService {
       }
       // PrzyczynaKorekty is required by the schema
       fa.ele('PrzyczynaKorekty').txt('Korekta wartości faktury');
+    }
+
+    // ─── RodzajFaktury ─────────────────────────────────────
+    if (isCorrection) {
+      fa.ele('RodzajFaktury').txt('KOR');
+    } else {
+      fa.ele('RodzajFaktury').txt('VAT');
     }
 
     // ─── FaWiersz (lines) ─────────────────────────────────

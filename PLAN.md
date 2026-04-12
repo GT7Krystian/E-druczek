@@ -83,26 +83,31 @@
 
 ---
 
-## ETAP 4 — Integracja KSeF (środowisko demo)
-*Cel: wysłać pierwszą fakturę do demo.ksef.gov.pl i odebrać numer KSeF*
+## ETAP 4 — Integracja KSeF (środowisko testowe)
+*Cel: wysłać pierwszą fakturę do api-test.ksef.mf.gov.pl i odebrać numer KSeF*
 
-- [ ] Rejestracja na demo.ksef.gov.pl (NIP testowy)
-- [ ] `KsefSessionService`:
-  - [ ] Inicjalizacja sesji tokenem
-  - [ ] Mutex Redis (`ksef:lock:{company_id}`)
-  - [ ] Zamknięcie sesji (Terminate)
-- [ ] `KsefSendService`:
-  - [ ] Wysyłka XML
-  - [ ] Deduplikacja przed retry (sprawdzenie czy KSeF już przyjął)
-- [ ] `KsefStatusService`:
-  - [ ] Polling UPO (max 15 min, timeout → PROCESSING_TIMEOUT)
-  - [ ] Mapowanie statusów KSeF → wewnętrzne statusy
-- [ ] Obsługa błędów:
-  - [ ] 5xx / timeout → retry z backoff (max 5)
-  - [ ] Błąd biznesowy XML → REJECTED natychmiast
-  - [ ] Wyczerpany retry → DLQ (failed_jobs)
+- [x] Token KSeF wygenerowany na środowisku testowym (NIP: 5260250274)
+- [x] `KsefCryptoService`:
+  - [x] RSA-OAEP SHA-256 z dwoma osobnymi certyfikatami MF (KsefTokenEncryption + SymmetricKeyEncryption)
+  - [x] AES-256-CBC szyfrowanie XML faktur
+  - [x] SHA-256 hashing
+- [x] `KsefApiClient` — typowany HTTP client (12 endpointów KSeF API v2)
+- [x] `KsefSessionService`:
+  - [x] Challenge → auth → token redeem → session open
+  - [x] Mutex Redis (`ksef:lock:{company_id}`)
+  - [x] Zamknięcie sesji + auth terminate
+- [x] `KsefSendService`:
+  - [x] Encrypt XML (AES) + send do KSeF
+- [x] `KsefStatusService`:
+  - [x] Polling UPO (5s interval, max 15 min)
+  - [x] Pobranie ksefNumber per faktura
+- [x] E2E test: faktura VAT wysłana → **numer KSeF: `5260250274-20260412-74E844800000-86`**
+- [x] Poprawki namespace FA(3): `http://crd.gov.pl/wzor/2025/06/25/13775/`
+- [x] Poprawki XSD: `P_22N`, `RodzajFaktury`, brak `P_22` w `TWybor1`
+- [ ] Deduplikacja przed retry (do zaimplementowania w E5)
+- [ ] Retry z backoff + DLQ (do zaimplementowania w E5)
 
-**✅ Punkt kontrolny E4:** Faktura VAT wysłana do demo KSeF, odebrany numer KSeF, status ACCEPTED w bazie
+**✅ Punkt kontrolny E4:** Faktura VAT wysłana do testowego KSeF, odebrany numer KSeF `5260250274-20260412-74E844800000-86`, status 200 (sukces) — **ZWERYFIKOWANE**
 
 ---
 
