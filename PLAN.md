@@ -62,23 +62,24 @@
 - [x] Walidacja DTO (class-validator) — globalny ValidationPipe (whitelist, transform)
 - [x] Globalny error handler — `AllExceptionsFilter`
 
-**✅ Punkt kontrolny E2:** `POST /companies` i `POST /documents` działają, dane lądują w Supabase
+**✅ Punkt kontrolny E2:** `POST /companies` i `POST /documents` działają, dane lądują w Supabase — **zweryfikowane end-to-end** (user przez Supabase Auth, JWT, curl POST → 201, GET zwraca dane)
 
 ---
 
 ## ETAP 3 — Generator XML FA(3)
 *Cel: generowanie poprawnego XML zgodnego ze schematem KSeF 2.0*
 
-- [ ] Pobranie schematu XSD FA(3) z MF
-- [ ] `XmlGeneratorService` — generowanie XML z danych dokumentu:
-  - [ ] Faktura VAT (stawki 23%, 8%, 5%, 0%)
-  - [ ] Faktura ZW (węzły P_19A / P_19B / P_19C per pozycja)
-  - [ ] Faktura korygująca (model delta, NrKSeF vs NrKSeFN)
-- [ ] `XsdValidatorService` — walidacja wygenerowanego XML
-- [ ] Testy jednostkowe generatora (przynajmniej 3 scenariusze)
-- [ ] Zapis XML do Supabase Storage
+- [x] Pobranie schematu XSD FA(3) z MF (FA-3.xsd, StrukturyDanych, ElementarneTypy — 3 pliki z crd.gov.pl)
+- [x] `XmlGeneratorService` — generowanie XML z danych dokumentu:
+  - [x] Faktura VAT (stawki 23%, 8%, 5%, 0%) — Scenario 1 test ✓
+  - [x] Faktura ZW (węzły P_19A / P_19B / P_19C per pozycja) — Scenario 2 test ✓
+  - [x] Faktura korygująca (model delta, NrKSeF vs NrKSeFN) — Scenario 3 test ✓
+- [x] `XsdValidatorService` — stub (xmllint-wasm zaload async przy bootstrap)
+- [x] Testy jednostkowe generatora — 17 testów, wszystkie ✓
+- [ ] Zapis XML do Supabase Storage (w E5 + endpoint POST /api/documents/:id/generate-xml)
+- [ ] Pełny test XSD walidacji (wymaga dbg z xmllint-wasm)
 
-**✅ Punkt kontrolny E3:** Wygenerowany XML przechodzi walidację XSD bez błędów
+**⚠️ Punkt kontrolny E3:** `XmlGeneratorService` przechodzi 17 testów; `XsdValidatorService` czeka na weryfikację xmllint-wasm (w E3-advanced lub E4)
 
 ---
 
