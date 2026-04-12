@@ -114,21 +114,24 @@
 ## ETAP 5 — Pipeline kolejek BullMQ
 *Cel: niezawodny, idempotentny pipeline wysyłki*
 
-- [ ] Konfiguracja BullMQ + Redis
-- [ ] Kolejki i workery:
-  - [ ] `generate-xml` worker
-  - [ ] `validate-xsd` worker + Data Freeze w DB
-  - [ ] `send-to-ksef` worker (concurrency: 1)
-  - [ ] `check-status-upo` worker (polling z timeoutem)
-  - [ ] `generate-pdf` worker (nie blokuje, własny fallback)
-  - [ ] `invoice-offline-sync` worker (Offline24)
-- [ ] Dead Letter Queue — obsługa `failed_jobs`
-- [ ] CRON monitoring SLA (co 1 min):
-  - [ ] Alert QUEUED_STUCK (> 5 min)
-  - [ ] Alert PROCESSING_STUCK (> 10 min)
-  - [ ] Alert OFFLINE_CRITICAL (< 2h do deadline)
+- [x] Konfiguracja BullMQ + Redis + @nestjs/schedule
+- [x] Kolejki i workery:
+  - [x] `generate-xml` worker — buduje XML z danych DB, upload do Supabase Storage
+  - [x] `validate-xsd` worker + Data Freeze w DB (graceful skip gdy xmllint-wasm niedostępny)
+  - [x] `send-to-ksef` worker (concurrency: 1) — sesja KSeF, encrypt, send, close
+  - [x] `check-status-upo` worker (polling z timeoutem 15 min, mapowanie ACCEPTED/REJECTED/TIMEOUT)
+  - [x] `generate-pdf` worker (stub — pełna implementacja w E7)
+  - [ ] `invoice-offline-sync` worker (Offline24 — do E8)
+- [x] Dead Letter Queue — `DlqService` zapisuje do `failed_jobs`
+- [x] CRON monitoring SLA (co 1 min) — `SlaMonitorService`:
+  - [x] Alert QUEUED_STUCK (> 5 min)
+  - [x] Alert PROCESSING_STUCK (> 10 min)
+  - [x] Alert OFFLINE_CRITICAL (< 2h do deadline)
+- [x] Endpoint `POST /documents/:id/submit` — DRAFT → QUEUED → pipeline
+- [ ] Deduplikacja przed retry (do zaimplementowania po testach E2E)
+- [ ] Retry z backoff + DLQ (send-to-ksef ma 3 attempts z exponential backoff)
 
-**✅ Punkt kontrolny E5:** Faktura przechodzi przez cały pipeline automatycznie, widać statusy w bazie
+**⚠️ Punkt kontrolny E5:** Pipeline zaimplementowany, build OK, 17/17 testów. Wymaga testów E2E z Redis + Supabase Storage bucket
 
 ---
 

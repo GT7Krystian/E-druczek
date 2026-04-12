@@ -30,4 +30,9 @@ export class DocumentsController {
   create(@Body() dto: CreateDocumentDto, @Req() req: AuthenticatedRequest) {
     return this.documents.create(req.userId, dto);
   }
+
+  @Post(':id/submit')
+  submit(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.documents.submit(id, req.userId);
+  }
 }

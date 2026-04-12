@@ -1,9 +1,12 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Document, KsefStatus, InvoiceTarget } from '@e-druczek/shared';
 import { SUPABASE_CLIENT } from '../supabase/supabase.module';
@@ -11,7 +14,10 @@ import { CreateDocumentDto } from './dto/create-document.dto';
 
 @Injectable()
 export class DocumentsService {
-  constructor(@Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient) {}
+  constructor(
+    @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
+    @InjectQueue('generate-xml') private readonly generateXmlQueue: Queue,
+  ) {}
 
   async findAllForUser(userId: string): Promise<Document[]> {
     const { data, error } = await this.supabase
@@ -72,5 +78,43 @@ export class DocumentsService {
     if (itemsErr) throw itemsErr;
 
     return doc as Document;
+  }
+
+  /**
+   * Submit a DRAFT document to the KSeF pipeline.
+   * Sets status to QUEUED and enqueues the generate-xml job.
+   */
+  async submit(documentId: string, userId: string): Promise<Document> {
+    // Verify document exists and belongs to user
+    const doc = await this.findOne(documentId, userId);
+
+    if (doc.ksef_status !== KsefStatus.DRAFT) {
+      throw new BadRequestException(
+        `Document ${documentId} is not in DRAFT status (current: ${doc.ksef_status})`,
+      );
+    }
+
+    if (doc.invoice_target === InvoiceTarget.B2C) {
+      throw new BadRequestException(
+        'B2C documents cannot be submitted to KSeF',
+      );
+    }
+
+    // Set status to QUEUED (triggers Data Freeze — document becomes immutable)
+    const { data: updated, error } = await this.supabase
+      .from('documents')
+      .update({ ksef_status: KsefStatus.QUEUED })
+      .eq('id', documentId)
+      .select()
+      .single();
+    if (error) throw error;
+
+    // Enqueue to pipeline
+    await this.generateXmlQueue.add(
+      { documentId },
+      { attempts: 1 },
+    );
+
+    return updated as Document;
   }
 }
