@@ -138,24 +138,26 @@
 ## ETAP 6 — Frontend Next.js
 *Cel: działający interfejs użytkownika, mobile-first*
 
-- [ ] Supabase Auth UI — logowanie / rejestracja z kodem zaproszenia
-- [ ] Onboarding — formularz danych firmy (NIP, nazwa, status VAT)
-- [ ] Dashboard główny:
-  - [ ] Lista faktur z statusami KSeF (real-time SSE)
-  - [ ] Tracker limitu 10 000 zł
-- [ ] Formularz wystawiania faktury:
-  - [ ] Dynamiczny (VAT_ACTIVE → stawki VAT, VAT_EXEMPT → podstawa prawna)
-  - [ ] Przełącznik B2B / B2C
-  - [ ] Pozycje faktury (dodawanie, usuwanie)
-  - [ ] Walidacja po stronie klienta
-- [ ] Formularz faktury korygującej:
-  - [ ] Wskazanie faktury pierwotnej
-  - [ ] Model delta (różnica, nie nowa kwota)
-  - [ ] Pytanie: czy dokument pierwotny był w KSeF?
-- [ ] Widok faktury — podgląd PDF, status KSeF, numer KSeF
-- [ ] Real-time statusy (SSE / long-polling: QUEUED → PROCESSING → ACCEPTED)
+- [x] Supabase Auth — logowanie / rejestracja z kodem zaproszenia (`app/login/page.tsx`)
+- [x] Onboarding — formularz danych firmy (NIP, nazwa, adres, status VAT) (`app/onboarding/page.tsx`)
+- [x] Dashboard główny:
+  - [x] Lista faktur z statusami KSeF (real-time SSE)
+  - [x] Tracker limitu 10 000 zł z paskiem postępu
+- [x] Formularz wystawiania faktury:
+  - [x] Dynamiczny (VAT_ACTIVE → stawki VAT, ZW/NP → podstawa prawna)
+  - [x] Przełącznik B2B / B2C
+  - [x] Pozycje faktury (dodawanie, usuwanie, auto-kalkulacja)
+  - [x] Walidacja po stronie klienta (NIP, kwoty)
+- [ ] Formularz faktury korygującej (`/invoices/[id]/correct`) — do zaimplementowania
+- [x] Widok faktury — numer KSeF, pozycje, przyciski submit/PDF/korekta
+- [x] Real-time statusy SSE (QUEUED → PROCESSING → ACCEPTED)
+- [x] PWA — manifest.json, theme-color zielony, standalone
+- [x] Navbar — sidebar (desktop) + bottom nav (mobile)
+- [x] StatusBadge — 9 statusów z kolorami
+- [x] Proxy (Next.js 16) — ochrona tras, redirect na /login
+- [x] Fix: Turbopack monorepo — tailwindcss hoisted do root node_modules
 
-**✅ Punkt kontrolny E6:** Można wystawić fakturę VAT B2B przez UI i zobaczyć ją jako ACCEPTED
+**⚠️ Punkt kontrolny E6:** UI zbudowany i renderuje się poprawnie (zweryfikowane preview). Brakuje formularza korekty i integracji end-to-end z działającym backendem (Redis + Supabase Storage)
 
 ---
 
