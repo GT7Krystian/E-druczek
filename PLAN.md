@@ -164,13 +164,15 @@
 ## ETAP 7 — Generowanie PDF
 *Cel: PDF z kodem QR zgodny z wymogami MF*
 
-- [ ] `PdfGeneratorService` — generowanie PDF z XML (XSLT MF lub własny renderer)
-- [ ] PDF zawsze z XML ze storage (nigdy z danych bazy)
-- [ ] Dwa kody QR dla Offline24 (wersja algorytmu MF)
-- [ ] Tryb RETRYING — PDF nie blokuje statusu ACCEPTED
-- [ ] Zapis PDF do Supabase Storage
+- [x] `PdfGeneratorService` — PDFKit renderer (układ faktury PL: nagłówek, sprzedawca/nabywca, tabela pozycji, podsumowanie)
+- [x] PDF zawsze z XML ze storage (xml2js parser → InvoiceData → PDFKit)
+- [x] Dwa kody QR — weryfikacja KSeF + weryfikacja e-druczek (qrcode library)
+- [x] Tryb RETRYING → GENERATED/FAILED — nie blokuje statusu ACCEPTED
+- [x] Zapis PDF do Supabase Storage (`invoices/{documentId}.pdf`)
+- [x] `generate-pdf` worker zaktualizowany (nie stub)
+- [x] `PdfModule` dodany do `QueueModule`
 
-**✅ Punkt kontrolny E7:** PDF pobieralny dla faktury ACCEPTED, zgodny wizualnie z wymogami MF
+**⚠️ Punkt kontrolny E7:** PdfGeneratorService zaimplementowany, build OK, 17/17 testów. Wymaga testu E2E z pełnym pipeline (XML w Storage → PDF → pobranie)
 
 ---
 

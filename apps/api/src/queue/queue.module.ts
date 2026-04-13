@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
 import { XmlModule } from '../xml/xml.module';
 import { KsefModule } from '../ksef/ksef.module';
+import { PdfModule } from '../pdf/pdf.module';
 import { DlqService } from './dlq.service';
 import { SlaMonitorService } from './sla-monitor.service';
 import { GenerateXmlProcessor } from './workers/generate-xml.processor';
@@ -30,6 +31,7 @@ import { GeneratePdfProcessor } from './workers/generate-pdf.processor';
     ),
     XmlModule,
     KsefModule,
+    PdfModule,
   ],
   providers: [
     DlqService,
