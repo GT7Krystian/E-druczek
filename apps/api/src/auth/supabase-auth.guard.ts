@@ -20,11 +20,19 @@ export class SupabaseAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<AuthenticatedRequest>();
+
+    // Primary: Authorization header (REST)
+    // Fallback: ?token= query param (EventSource/SSE — browsers can't send custom headers)
     const header = req.headers['authorization'];
-    if (!header?.startsWith('Bearer ')) {
+    let token: string | undefined;
+    if (header?.startsWith('Bearer ')) {
+      token = header.slice('Bearer '.length);
+    } else if (typeof req.query['token'] === 'string') {
+      token = req.query['token'];
+    }
+    if (!token) {
       throw new UnauthorizedException('Missing Bearer token');
     }
-    const token = header.slice('Bearer '.length);
 
     const { data, error } = await this.supabase.auth.getUser(token);
     if (error || !data.user) {

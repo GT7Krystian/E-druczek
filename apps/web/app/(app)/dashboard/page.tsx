@@ -63,23 +63,23 @@ export default function DashboardPage() {
     load();
   }, []);
 
-  // SSE — real-time status updates
+  // SSE — real-time status updates (token as query param — EventSource can't set headers)
   useEffect(() => {
     if (!company) return;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const es = new EventSource(`${apiUrl}/documents/status-stream`);
-    es.onmessage = (e) => {
-      try {
-        const update = JSON.parse(e.data);
-        setInvoices((prev) =>
-          prev.map((inv) =>
-            inv.id === update.id ? { ...inv, ksef_status: update.ksef_status, ksef_reference_number: update.ksef_reference_number } : inv,
-          ),
-        );
-      } catch { /* ignore */ }
-    };
-    return () => es.close();
-  }, [company]);
+    let es: EventSource;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      es = new EventSource(`${apiUrl}/documents/status-stream?token=${session.access_token}`);
+      es.onmessage = (e) => {
+        try {
+          const docs = JSON.parse(e.data) as Invoice[];
+          setInvoices(docs);
+        } catch { /* ignore */ }
+      };
+    });
+    return () => es?.close();
+  }, [company, supabase.auth]);
 
   if (loading) {
     return (
