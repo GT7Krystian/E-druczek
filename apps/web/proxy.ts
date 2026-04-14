@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Public routes
-  const publicRoutes = ['/login', '/reset-password'];
+  const publicRoutes = ['/login', '/reset-password', '/auth/callback'];
   if (publicRoutes.includes(pathname)) {
     if (user) {
       return NextResponse.redirect(new URL('/dashboard', request.url));

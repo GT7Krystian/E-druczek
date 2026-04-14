@@ -14,37 +14,16 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
 
+  // Sesja powinna już istnieć — /auth/callback wymienił code na sesję
+  // i zrobił redirect tutaj. Sprawdzamy tylko czy jest aktywna sesja.
   useEffect(() => {
-    async function init() {
-      // PKCE flow (Supabase domyślny): ?code= w URL → wymień na sesję
-      const code = new URLSearchParams(window.location.search).get('code');
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) {
-          setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
-        } else {
-          setReady(true);
-        }
-        return;
-      }
-
-      // Implicit flow (starszy): #access_token= w hashu
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-        if (event === 'PASSWORD_RECOVERY') setReady(true);
-      });
-
-      // Fallback: sesja może już istnieć
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) { setReady(true); return; }
-
-      // Timeout 5s — jeśli ani code ani event → błąd
-      const timeout = setTimeout(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setReady(true);
+      } else {
         setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
-      }, 5000);
-
-      return () => { subscription.unsubscribe(); clearTimeout(timeout); };
-    }
-    init();
+      }
+    });
   }, [supabase.auth]);
 
   async function handleSubmit(e: React.FormEvent) {
