@@ -15,15 +15,31 @@ export default function ResetPasswordPage() {
   const [ready, setReady] = useState(false);
 
   // Supabase wysyła token w hash URL (#access_token=...&type=recovery)
-  // @supabase/ssr automatycznie go obsługuje przy getSession()
+  // getSession() nie widzi hash — trzeba nasłuchiwać PASSWORD_RECOVERY event
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
         setReady(true);
-      } else {
-        setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
       }
     });
+
+    // Fallback: może sesja już istnieje (np. odświeżenie strony po kliknięciu linku)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true);
+    });
+
+    // Timeout — jeśli po 4s brak sesji → błąd
+    const timeout = setTimeout(() => {
+      setReady(prev => {
+        if (!prev) setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
+        return prev;
+      });
+    }, 4000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, [supabase.auth]);
 
   async function handleSubmit(e: React.FormEvent) {
