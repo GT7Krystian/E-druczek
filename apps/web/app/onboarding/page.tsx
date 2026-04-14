@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { isValidNip } from '@e-druczek/shared';
 
 const VAT_OPTIONS = [
   { value: 'VAT_ACTIVE', label: 'Czynny podatnik VAT' },
@@ -30,8 +31,8 @@ export default function OnboardingPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!/^\d{10}$/.test(form.nip)) {
-      setError('NIP musi zawierać dokładnie 10 cyfr');
+    if (!isValidNip(form.nip)) {
+      setError('Nieprawidłowy NIP — sprawdź czy numer jest poprawny');
       return;
     }
     setError('');
@@ -87,8 +88,20 @@ export default function OnboardingPage() {
                 value={form.nip}
                 onChange={(e) => set('nip', e.target.value.replace(/\D/g, ''))}
                 placeholder="5260250274"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:border-transparent ${
+                  form.nip.length === 10
+                    ? isValidNip(form.nip)
+                      ? 'border-green-400 focus:ring-green-500 bg-green-50'
+                      : 'border-red-400 focus:ring-red-400 bg-red-50'
+                    : 'border-gray-300 focus:ring-green-500'
+                }`}
               />
+              {form.nip.length === 10 && !isValidNip(form.nip) && (
+                <p className="mt-1 text-xs text-red-600">Nieprawidłowy NIP — sprawdź numer</p>
+              )}
+              {form.nip.length === 10 && isValidNip(form.nip) && (
+                <p className="mt-1 text-xs text-green-600">✓ NIP poprawny</p>
+              )}
             </div>
 
             <div>

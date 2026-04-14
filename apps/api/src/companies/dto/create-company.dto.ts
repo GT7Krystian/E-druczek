@@ -1,8 +1,9 @@
-import { IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Length } from 'class-validator';
 import { VatStatus } from '@e-druczek/shared';
+import { IsPolishNip } from '../../common/nip.validator';
 
 export class CreateCompanyDto {
-  @Matches(/^\d{10}$/, { message: 'NIP musi zawierać dokładnie 10 cyfr' })
+  @IsPolishNip()
   nip!: string;
 
   @IsString()
