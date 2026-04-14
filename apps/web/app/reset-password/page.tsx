@@ -14,32 +14,37 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('');
   const [ready, setReady] = useState(false);
 
-  // Supabase wysyła token w hash URL (#access_token=...&type=recovery)
-  // getSession() nie widzi hash — trzeba nasłuchiwać PASSWORD_RECOVERY event
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setReady(true);
+    async function init() {
+      // PKCE flow (Supabase domyślny): ?code= w URL → wymień na sesję
+      const code = new URLSearchParams(window.location.search).get('code');
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
+        } else {
+          setReady(true);
+        }
+        return;
       }
-    });
 
-    // Fallback: może sesja już istnieje (np. odświeżenie strony po kliknięciu linku)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
-    });
-
-    // Timeout — jeśli po 4s brak sesji → błąd
-    const timeout = setTimeout(() => {
-      setReady(prev => {
-        if (!prev) setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
-        return prev;
+      // Implicit flow (starszy): #access_token= w hashu
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') setReady(true);
       });
-    }, 4000);
 
-    return () => {
-      subscription.unsubscribe();
-      clearTimeout(timeout);
-    };
+      // Fallback: sesja może już istnieć
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) { setReady(true); return; }
+
+      // Timeout 5s — jeśli ani code ani event → błąd
+      const timeout = setTimeout(() => {
+        setError('Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy.');
+      }, 5000);
+
+      return () => { subscription.unsubscribe(); clearTimeout(timeout); };
+    }
+    init();
   }, [supabase.auth]);
 
   async function handleSubmit(e: React.FormEvent) {
