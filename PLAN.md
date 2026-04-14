@@ -131,7 +131,7 @@
 - [ ] Deduplikacja przed retry (do zaimplementowania po testach E2E)
 - [ ] Retry z backoff + DLQ (send-to-ksef ma 3 attempts z exponential backoff)
 
-**⚠️ Punkt kontrolny E5:** Pipeline zaimplementowany, build OK, 17/17 testów. Wymaga testów E2E z Redis + Supabase Storage bucket
+**✅ Punkt kontrolny E5:** Pipeline E2E zweryfikowany — DRAFT→QUEUED→PROCESSING→ACCEPTED→PDF GENERATED w ~9s. KSeF nr: `5260250274-20260414-94F6F0400000-AC`. Supabase Storage bucket `documents` ✓
 
 ---
 
@@ -157,7 +157,7 @@
 - [x] Proxy (Next.js 16) — ochrona tras, redirect na /login
 - [x] Fix: Turbopack monorepo — tailwindcss hoisted do root node_modules
 
-**⚠️ Punkt kontrolny E6:** UI zbudowany i renderuje się poprawnie (zweryfikowane preview). Brakuje formularza korekty i integracji end-to-end z działającym backendem (Redis + Supabase Storage)
+**⚠️ Punkt kontrolny E6:** UI zbudowany i renderuje się poprawnie (zweryfikowane preview). Brakuje formularza korekty (`/invoices/[id]/correct`). Backend E2E zweryfikowany w E5/E7.
 
 ---
 
@@ -172,7 +172,7 @@
 - [x] `generate-pdf` worker zaktualizowany (nie stub)
 - [x] `PdfModule` dodany do `QueueModule`
 
-**⚠️ Punkt kontrolny E7:** PdfGeneratorService zaimplementowany, build OK, 17/17 testów. Wymaga testu E2E z pełnym pipeline (XML w Storage → PDF → pobranie)
+**✅ Punkt kontrolny E7:** PDF generowany w pełnym pipeline E2E — xml2js + PDFKit + QR codes + upload do Storage. pdf_status=GENERATED, pdf_url=`invoices/{documentId}.pdf` ✓
 
 ---
 
