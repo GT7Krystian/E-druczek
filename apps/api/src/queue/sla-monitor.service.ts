@@ -29,7 +29,7 @@ export class SlaMonitorService {
   private async checkQueuedStuck(): Promise<void> {
     const { data, error } = await this.supabase
       .from('sla_queued_stuck')
-      .select('id, company_id, ksef_status, created_at');
+      .select('id, company_id, ksef_status, updated_at, stuck_duration');
 
     if (error) {
       this.logger.error(`SLA query failed (queued_stuck): ${error.message}`);
@@ -46,7 +46,7 @@ export class SlaMonitorService {
   private async checkProcessingStuck(): Promise<void> {
     const { data, error } = await this.supabase
       .from('sla_processing_stuck')
-      .select('id, company_id, ksef_status, created_at');
+      .select('id, company_id, ksef_status, updated_at, stuck_duration');
 
     if (error) {
       this.logger.error(`SLA query failed (processing_stuck): ${error.message}`);
